@@ -1,0 +1,72 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="skinny">
+      <div class="container-fluid jumbotron">
+        <form>
+          <div class="form-group">
+            <label class="title" for="recommendation_letter">
+              <div class="logo-bauble">
+                <img src="https://pbs.twimg.com/profile_images/549561819010854912/AJonc96g.png" />
+              </div>
+              <h4>What does Taco say?</h4>
+            </label>
+            <textarea class="form-control" rows="10" id="recommendation-letter" placeholder="Chandrika Vasudevan is recommended by me."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="signature" class="pull-xs-right"><i class="subdued">... signed</i></label>
+            <textarea class="form-control" id="signature" ></textarea>
+          </div>
+          <a class="btn btn-primary pull-xs-right" id="recommend">
+            Go!
+          </a>
+        </form>
+      </div>
+    </div>
+  </body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script>
+    /**
+      * Link Generator
+      */
+    function checksum(phrase) {
+      var string = phrase + "approved by Taco"
+      var testsum = 123;
+      for(var i = 0; i<string.length; i++) {
+        testsum = testsum * 13 + string.charCodeAt(i);
+        while(testsum > 10000000) {
+          testsum -= 1000000;
+        }
+      }
+      return testsum
+    }
+    function build(base, phrase) {
+      var checked = checksum(phrase);
+      var url = base + "?abracadbra=true&_____valueOf#|checksum=" + checked + "|" + encodeURIComponent(phrase) + "=true"
+      return url;
+    }
+    function getUnicodeCharacter(cp) {
+      if (cp >= 0 && cp <= 0xD7FF || cp >= 0xE000 && cp <= 0xFFFF) {
+          return String.fromCharCode(cp);
+      } else if (cp >= 0x10000 && cp <= 0x10FFFF) {
+          cp -= 0x10000;
+          var first = ((0xffc00 & cp) >> 10) + 0xD800
+          var second = (0x3ff & cp) + 0xDC00;
+          return String.fromCharCode(first) + String.fromCharCode(second);
+      }
+    }
+    function openTaco(e) {
+      e.preventDefault();
+      var letter = $("#recommendation-letter").val();
+      var signature = $("#signature").val();
+      if (signature) letter += "\n" + signature;
+      letter = letter.replace(/\n/g, " \u00B6 ");
+      window.open(build('https://taco-spolsky.github.io/', letter));
+    }
+    $("#signature").val("Sincerely,\nTaco Spolsky " + getUnicodeCharacter(0x1F43E));
+    $("#recommend").click(openTaco)
+  </script>
+</html>
